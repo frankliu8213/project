@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.stripe-button-container {
+  min-height: 43px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+stripe-buy-button {
+  width: 100%;
+  display: block;
+}
