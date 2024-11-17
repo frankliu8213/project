@@ -1,37 +1,24 @@
 import express from 'express';
-import Stripe from 'stripe';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import { setupStripeModule } from './modules/stripe';
 
 // 加载环境变量
 dotenv.config();
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 const app = express();
 
-// 配置 CORS，只允许特定域名访问
+// 配置 CORS
 app.use(cors({
   origin: process.env.FRONTEND_URL
 }));
 
-// Webhook 处理
-app.post('/webhook', express.raw({type: 'application/json'}), async (req, res) => {
-  const sig = req.headers['stripe-signature'];
-  const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
-
-  try {
-    const event = stripe.webhooks.constructEvent(
-      req.body,
-      sig,
-      endpointSecret
-    );
-    // ... 其他代码
-  } catch (err) {
-    // ... 错误处理
-  }
-});
-
-// ... 其他路由
+// 使用 Stripe 模块
+app.use('/api', setupStripeModule(
+  app,
+  process.env.STRIPE_SECRET_KEY,
+  process.env.STRIPE_WEBHOOK_SECRET
+));
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
