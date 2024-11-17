@@ -1,6 +1,10 @@
 import { useState, useEffect } from 'react'
 import './App.css'
 
+// 从环境变量获取 API URL 和支付链接
+const API_URL = import.meta.env.VITE_API_URL;
+const STRIPE_PAYMENT_LINK = import.meta.env.VITE_STRIPE_PAYMENT_LINK;
+
 function App() {
   const [isPremium, setIsPremium] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
@@ -36,8 +40,8 @@ function App() {
       setIsLoading(true)
       console.log('正在验证支付状态...')
       
-      // 调用后端接口验证支付
-      const response = await fetch(`http://localhost:3000/verify-payment/${sessionId}`)
+      // 使用环境变量中的 API URL
+      const response = await fetch(`${API_URL}/verify-payment/${sessionId}`)
       const data = await response.json()
       
       console.log('支付验证结果:', data)
@@ -70,8 +74,7 @@ function App() {
       
       {!isPremium && (
         <a 
-        // Stripe 支付链接
-          href="https://buy.stripe.com/test_eVaeXIbw3brt6nCaEE" 
+          href={STRIPE_PAYMENT_LINK}
           className="upgrade-button"
         >
           升级到高级账户
